@@ -1,0 +1,4 @@
+common/target
+confluence/target
+dependency-reduced-pom.xml
+jira/target

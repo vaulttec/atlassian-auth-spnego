@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.vaulttec.atlassian</groupId>
+	<artifactId>auth-spnego</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Atlassian SPNEGO Authenticators</name>
+	<description>Seraph Authenticators for Auto-Login support in Atlassian Confluence / JIRA via GSSAPI / SPNEGO</description>
+
+	<inceptionYear>2019</inceptionYear>
+	<url>https://github.com/vaulttec/atlassian-auth-spnego</url>
+
+	<licenses>
+		<license>
+			<name>APACHE 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/vaulttec/atlassian-auth-spnego/issues</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:https://github.com/vaulttec/atlassian-auth-spnego.git</connection>
+		<developerConnection>scm:git:git@github.com:vaulttec/atlassian-auth-spnego.git</developerConnection>
+		<url>https://github.com/vaulttec/atlassian-auth-spnego</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>tjuerge</id>
+			<name>Torsten Juergeleit</name>
+			<organization>Vaulttec</organization>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>Vaulttec</name>
+		<url>http://vaulttec.org</url>
+	</organization>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<javax.servlet.api>[3.0,3.1)</javax.servlet.api>
+		<jira.version>8.4.0</jira.version>
+		<confluence.version>6.15.2</confluence.version>
+		<seraph.version>3.0.3</seraph.version>
+	</properties>
+
+	<modules>
+		<module>common</module>
+		<module>jira</module>
+		<module>confluence</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>2.4.3</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>shade</goal>
+							</goals>
+							<configuration>
+								<filters>
+									<filter>
+										<artifact>*:*</artifact>
+										<excludes>
+											<exclude>META-INF/*.SF</exclude>
+											<exclude>META-INF/*.DSA</exclude>
+											<exclude>META-INF/*.RSA</exclude>
+											<exclude>**/.DS_Store</exclude>
+										</excludes>
+									</filter>
+								</filters>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet.api}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>atlassian</id>
+			<url>https://m2proxy.atlassian.com/repository/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>spnego</id>
+			<url>http://repository.jspresso.org/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+	</repositories>
+</project>
