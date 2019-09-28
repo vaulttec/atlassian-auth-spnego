@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,29 +68,31 @@ public class SpnegoSupportTest {
 	}
 
 	@Test
-	public void testIsExcludedUri() {
-		@SuppressWarnings("serial")
-		Map<String, String> params = new HashMap<String, String>() {
-			{
-				put("exclude.uris", "/startwith/*, */endswith, */substring/*, /exactmatch" );
-			}
-		};
+	public void testIsUri() {
+		List<String> uris = Arrays.asList("/startwith/*", "*/endswith", "*/substring/*", "/exactmatch",
+				"/withquery?query1=*", "/withquery?*query2=true*");
 
 		SpnegoSupport spnegoSupport = new SpnegoSupport();
-		spnegoSupport.init(params);
 
-		assertFalse(spnegoSupport.isExcludedUri("/nomatch/testresource"));
-		assertTrue(spnegoSupport.isExcludedUri("/startwith/testresource"));
-		assertTrue(spnegoSupport.isExcludedUri("/exactmatch"));
-		assertFalse(spnegoSupport.isExcludedUri("/exactmatch/testresource"));
-		assertTrue(spnegoSupport.isExcludedUri("/startwith/testresource"));
-		assertFalse(spnegoSupport.isExcludedUri("/test/startwith/testresource"));
-		assertTrue(spnegoSupport.isExcludedUri("/testresource/endswith"));
-		assertFalse(spnegoSupport.isExcludedUri("/testresource/endswith/test"));
-		assertTrue(spnegoSupport.isExcludedUri("/testresource/substring/test"));
-		assertTrue(spnegoSupport.isExcludedUri("/substring/test"));
-		assertTrue(spnegoSupport.isExcludedUri("/test/substring/"));
-		assertTrue(spnegoSupport.isExcludedUri("/substring/"));
+		assertFalse(spnegoSupport.isUri(new MockRequest("/nomatch/testresource"), uris));
+
+		assertTrue(spnegoSupport.isUri(new MockRequest("/exactmatch"), uris));
+		assertFalse(spnegoSupport.isUri(new MockRequest("/exactmatch/testresource"), uris));
+
+		assertTrue(spnegoSupport.isUri(new MockRequest("/startwith/testresource"), uris));
+		assertFalse(spnegoSupport.isUri(new MockRequest("/test/startwith/testresource"), uris));
+
+		assertTrue(spnegoSupport.isUri(new MockRequest("/testresource/endswith"), uris));
+		assertFalse(spnegoSupport.isUri(new MockRequest("/testresource/endswith/test"), uris));
+
+		assertTrue(spnegoSupport.isUri(new MockRequest("/testresource/substring/test"), uris));
+		assertTrue(spnegoSupport.isUri(new MockRequest("/substring/test"), uris));
+		assertTrue(spnegoSupport.isUri(new MockRequest("/test/substring/"), uris));
+		assertTrue(spnegoSupport.isUri(new MockRequest("/substring/"), uris));
+
+		assertFalse(spnegoSupport.isUri(new MockRequest("/withquery", "query0=unknown"), uris));
+		assertTrue(spnegoSupport.isUri(new MockRequest("/withquery", "query1=true"), uris));
+		assertTrue(spnegoSupport.isUri(new MockRequest("/withquery", "query1=false&query2=true&query3=false"), uris));
 	}
 
 	@Test

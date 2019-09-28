@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,11 +47,13 @@ public class SpnegoSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(SpnegoSupport.class);
 
 	private static final String CONFIG_PARAM_CONFIG_FILES = "config.files";
+	private static final String CONFIG_PARAM_INCLUDE_URIS = "include.uris";
 	private static final String CONFIG_PARAM_EXCLUDE_URIS = "exclude.uris";
 	private static final String INCLUDE_FILE_PROPERTY = "include.file";
 
 	private boolean hasInit;
 	private List<Map<String, String>> configs;
+	private Set<String> includedUris;
 	private Set<String> excludedUris;
 
 	public SpnegoSupport check() throws IllegalStateException {
@@ -62,6 +65,7 @@ public class SpnegoSupport {
 
 	public final void init(final Map<String, String> params) {
 		configs = initConfigs(params);
+		includedUris = initIncludedUris(params);
 		excludedUris = initExcludedUris(params);
 		hasInit = true;
 	}
@@ -113,6 +117,18 @@ public class SpnegoSupport {
 		return null;
 	}
 
+	private Set<String> initIncludedUris(final Map<String, String> params) {
+		Set<String> uris = new HashSet<String>();
+		String excludeUris = params.get(CONFIG_PARAM_INCLUDE_URIS);
+		if (excludeUris != null) {
+			for (String uri : excludeUris.split(",")) {
+				uris.add(uri.trim());
+			}
+		}
+		LOG.info("Init: Included URIs '{}'", uris);
+		return uris;
+	}
+
 	private Set<String> initExcludedUris(final Map<String, String> params) {
 		Set<String> uris = new HashSet<String>();
 		String excludeUris = params.get(CONFIG_PARAM_EXCLUDE_URIS);
@@ -125,25 +141,74 @@ public class SpnegoSupport {
 		return uris;
 	}
 
-	public boolean isExcludedUri(final String uri) {
-		for (String excludedUri : excludedUris) {
-			if (excludedUri.endsWith("*")) {
-				if (excludedUri.startsWith("*")) {
-					if (uri.indexOf(excludedUri.substring(1, excludedUri.length() - 1)) != -1) {
-						return true;
-					}
-				} else {
-					if (uri.startsWith(excludedUri.substring(0, excludedUri.length() - 1))) {
+	public boolean isIncludedUri(final HttpServletRequest request) {
+		return isUri(request, includedUris);
+	}
+
+	public boolean isExcludedUri(final HttpServletRequest request) {
+		return isUri(request, excludedUris);
+	}
+
+	protected boolean isUri(final HttpServletRequest request, final Collection<String> uris) {
+		for (String uri : uris) {
+			int queryStringIndex = uri.indexOf('?');
+			if (queryStringIndex != -1) {
+				if (isQueryString(request, uri.substring(queryStringIndex + 1))) {
+					if (isUri(request, uri.substring(0, queryStringIndex))) {
 						return true;
 					}
 				}
-			} else if (excludedUri.startsWith("*")) {
-				if (uri.endsWith(excludedUri.substring(1))) {
+			} else {
+				if (isUri(request, uri)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	protected boolean isUri(final HttpServletRequest request, final String uri) {
+		if (uri.endsWith("*")) {
+			if (uri.startsWith("*")) {
+				if (request.getRequestURI().indexOf(uri.substring(1, uri.length() - 1)) != -1) {
+					return true;
+				}
+			} else {
+				if (request.getRequestURI().startsWith(uri.substring(0, uri.length() - 1))) {
+					return true;
+				}
+			}
+		} else if (uri.startsWith("*")) {
+			if (request.getRequestURI().endsWith(uri.substring(1))) {
+				return true;
+			}
+		} else {
+			if (request.getRequestURI().equals(uri)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	protected boolean isQueryString(final HttpServletRequest request, final String queryString) {
+		if (request.getQueryString() != null) {
+			if (queryString.endsWith("*")) {
+				if (queryString.startsWith("*")) {
+					if (request.getQueryString().indexOf(queryString.substring(1, queryString.length() - 1)) != -1) {
+						return true;
+					}
+				} else {
+					if (request.getQueryString().startsWith(queryString.substring(0, queryString.length() - 1))) {
+						return true;
+					}
+				}
+			} else if (queryString.startsWith("*")) {
+				if (request.getQueryString().endsWith(queryString.substring(1))) {
 					return true;
 				}
 
 			} else {
-				if (uri.equals(excludedUri)) {
+				if (request.getQueryString().equals(queryString)) {
 					return true;
 				}
 			}

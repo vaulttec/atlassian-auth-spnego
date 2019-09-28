@@ -26,15 +26,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SpnegoAuthenticatorTest {
 
 	@Test
 	public void testGetUserWithSession() {
 		Principal user = mock(Principal.class);
-		SpnegoAuthenticator authenticator = spy(new DummySpnegoAuthenticator());
+		SpnegoAuthenticator authenticator = spy(new MockSpnegoAuthenticator());
 		when(authenticator.getUserFromSession(any())).thenReturn(user);
 
 		assertEquals(user, authenticator.getUserViaSPNEGO(null, null));
@@ -51,42 +49,11 @@ public class SpnegoAuthenticatorTest {
 		when(support.hasNegotiationAuthenticationHeader(any(), any())).thenReturn(true);
 		when(support.authenticate(any(), any())).thenReturn("user1");
 
-		SpnegoAuthenticator authenticator = spy(new DummySpnegoAuthenticator());
+		SpnegoAuthenticator authenticator = spy(new MockSpnegoAuthenticator());
 		when(authenticator.getUser("user1")).thenReturn(user);
 		when(authenticator.getSupport()).thenReturn(support);
 		when(authenticator.authoriseUserAndEstablishSession(any(), any(), any())).thenReturn(true);
 
 		assertEquals(user, authenticator.getUserViaSPNEGO(request, response));
-	}
-
-	private static class DummySpnegoAuthenticator implements SpnegoAuthenticator {
-		private static final Logger LOGGER = LoggerFactory.getLogger(DummySpnegoAuthenticator.class);
-
-		@Override
-		public Logger getLogger() {
-			return LOGGER;
-		}
-
-		@Override
-		public SpnegoSupport getSupport() throws IllegalStateException {
-			return null;
-		}
-
-		@Override
-		public Principal getUser(String userName) {
-			return null;
-		}
-
-		@Override
-		public Principal getUserFromSession(HttpServletRequest request) {
-			return null;
-		}
-
-		@Override
-		public boolean authoriseUserAndEstablishSession(HttpServletRequest request, HttpServletResponse response,
-				Principal user) {
-			return false;
-		}
-		
 	}
 }

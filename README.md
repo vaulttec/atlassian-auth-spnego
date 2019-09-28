@@ -92,9 +92,14 @@ For JIRA the Seraph configuration (located in `<JIRA_INST_PATH>/atlassian-jira/W
     <param-value>/var/jira/spnego/kerberos-server1.properties, /var/jira/spnego/kerberos-server2.properties</param-value>
   </init-param>
   <init-param>
-    <!-- comma-separated list of excluded URIs (with optional leading and/or trailing '*' as wildcard) -->
+    <!-- comma-separated list of included URIs -->
+    <param-name>include.uris</param-name>
+    <param-value>/login.jsp?*os_destination=*</param-value>
+  </init-param>
+  <init-param>
+    <!-- comma-separated list of excluded URIs -->
     <param-name>exclude.uris</param-name>
-    <param-value>/rest/*, /plugins/*, /images/*, /download/*, /s/*, /login.jsp, /logout*</param-value>
+    <param-value>/rest/*, /plugins/*, /images/*, /download/*, /s/*, /login.jsp, /logout, /secure/Logout*, /alreadyloggedout.jsp</param-value>
   </init-param>
 </authenticator>
 ```

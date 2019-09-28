@@ -53,9 +53,17 @@ public interface SpnegoAuthenticator {
 			return null;
 		}
 
-		// skip excluded URI
-		if (getSupport().isExcludedUri(request.getRequestURI())) {
-			getLogger().debug("Excluding URI '{}'", request.getRequestURI());
+		// skip excluded URI - but only if it's not an included URI
+		if (getSupport().isIncludedUri(request)) {
+			if (getLogger().isDebugEnabled()) {
+				String queryString = request.getQueryString() != null ? "?" + request.getQueryString() : "";
+				getLogger().debug("Including URI '{}{}'", request.getRequestURI(), queryString);
+			}
+		} else if (getSupport().isExcludedUri(request)) {
+			if (getLogger().isDebugEnabled()) {
+				String queryString = request.getQueryString() != null ? "?" + request.getQueryString() : "";
+				getLogger().debug("Excluding URI '{}{}'", request.getRequestURI(), queryString);
+			}
 			return null;
 		}
 
