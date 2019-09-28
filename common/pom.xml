@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.vaulttec.atlassian</groupId>
 		<artifactId>auth-spnego</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>auth-spnego-common</artifactId>
 
