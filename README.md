@@ -49,12 +49,23 @@ In the Atlassian product's [seraph configuration `/WEB-INF/classes/seraph-config
     <param-value>/var/atlassian/spnego/kerberos-server1.properties, /var/atlassian/spnego/kerberos-server2.properties</param-value>
   </init-param>
   <init-param>
-    <!-- comma-separated list of excluded URIs (with optional leading and/or trailing '*' as wildcard) -->
+    <!-- comma-separated list of included URIs -->
+    <param-name>include.uris</param-name>
+    <param-value>/login.jsp?*os_destination=*</param-value>
+  </init-param>
+  <init-param>
+    <!-- comma-separated list of excluded URIs -->
     <param-name>exclude.uris</param-name>
     <param-value>/rest/*, /plugins/*</param-value>
   </init-param>
 </authenticator>
 ```
+
+#### URI Syntax
+
+The URIs provided (as comma-separated list) for the parameter `include.uris` and `exclude.uris` consist of two parts - a leading path and an optional trailing query string (separated by "?"), e.g. `/logout` or `/login.jsp?os_destination=/admin/`. These URIs are checked for **exact matching** (same case and length).
+
+Both parts support an optional leading and / or trailing wildcard (indicated by "*"), e.g. `/startswith/*`, `*/endswith`, `*/substring/*`, `/withquery?query1=*` or `/withquery?*query2=true*`. Due to performance reasons only a single **trailing** and / or **leading** wildcard is allowed.
 
 
 ## Confluence Configuration
@@ -71,7 +82,7 @@ For Confluence the Seraph configuration (located in `<CONFLUENCE_INST_PATH>/conf
     <param-value>/var/confluence/spnego/kerberos-server1.properties, /var/confluence/spnego/kerberos-server2.properties</param-value>
   </init-param>
   <init-param>
-    <!-- comma-separated list of excluded URIs (with optional leading and/or trailing '*' as wildcard) -->
+    <!-- comma-separated list of excluded URIs -->
     <param-name>exclude.uris</param-name>
     <param-value>/rest/*, /plugins/*, /images/*, /download/*, /styles/*, /s/*, /login.action, /logout.action</param-value>
   </init-param>
