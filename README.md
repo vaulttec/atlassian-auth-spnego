@@ -51,12 +51,12 @@ In the Atlassian product's [seraph configuration `/WEB-INF/classes/seraph-config
   <init-param>
     <!-- comma-separated list of included URIs -->
     <param-name>include.uris</param-name>
-    <param-value>/login.jsp?*os_destination=*</param-value>
+    <param-value>/login.action?*os_destination=*</param-value>
   </init-param>
   <init-param>
     <!-- comma-separated list of excluded URIs -->
     <param-name>exclude.uris</param-name>
-    <param-value>/rest/*, /plugins/*</param-value>
+    <param-value>/rest/*, /plugins/*, /login.action, /logout.action</param-value>
   </init-param>
 </authenticator>
 ```
@@ -80,6 +80,11 @@ For Confluence the Seraph configuration (located in `<CONFLUENCE_INST_PATH>/conf
     <!-- comma-separated list of SPNEGO config files (absolute path) -->
     <param-name>config.files</param-name>
     <param-value>/var/confluence/spnego/kerberos-server1.properties, /var/confluence/spnego/kerberos-server2.properties</param-value>
+  </init-param>
+  <init-param>
+    <!-- comma-separated list of included URIs -->
+    <param-name>include.uris</param-name>
+    <param-value>/login.action?*os_destination=*</param-value>
   </init-param>
   <init-param>
     <!-- comma-separated list of excluded URIs -->
