@@ -1,4 +1,4 @@
-# Seraph Authenticators for Auto-Login support in Atlassian Confluence / JIRA
+# Seraph Authenticators for Auto-Login support in Atlassian Confluence / JIRA   [![Release](https://img.shields.io/github/release/vaulttec/atlassian-auth-spnego)](https://github.com/vaulttec/atlassian-auth-spnego/releases/latest)
 
 This project provides [Seraph](https://docs.atlassian.com/atlassian-seraph/) Authenticators for Atlassian's Confluence and JIRA which implement auto-login via [GSSAPI](http://en.wikipedia.org/wiki/GSSAPI) / [SPNEGO](http://en.wikipedia.org/wiki/SPNEGO) (e.g. [Kerberos](http://en.wikipedia.org/wiki/Kerberos_%28protocol%29#Microsoft_Windows) / Active Directory).  
 
