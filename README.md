@@ -65,7 +65,8 @@ In the Atlassian product's [seraph configuration `/WEB-INF/classes/seraph-config
 
 The URIs provided (as comma-separated list) for the parameter `include.uris` and `exclude.uris` consist of two parts - a leading path and an optional trailing query string (separated by "?"), e.g. `/logout` or `/login.jsp?os_destination=/admin/`. These URIs are checked for **exact matching** (same case and length).
 
-Both parts support an optional leading and / or trailing wildcard (indicated by "*"), e.g. `/startswith/*`, `*/endswith`, `*/substring/*`, `/withquery?query1=*` or `/withquery?*query2=true*`. Due to performance reasons only a single **trailing** and / or **leading** wildcard is allowed.
+Both URI parts support optional leading and trailing wildcards (indicated by "*"), e.g. `/startswith/*`, `*/endswith`, `*/substring/*`, `/withquery?query1=*` or `/withquery?*query2=true*`.
+Due to performance reasons only **trailing** and **leading** wildcards are allowed.
 
 
 ## Confluence Configuration
