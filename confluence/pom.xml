@@ -9,13 +9,6 @@
 	</parent>
 	<artifactId>auth-spnego-confluence</artifactId>
 
-	<scm>
-		<connection>scm:git:https://github.com/vaulttec/atlassian-auth-spnego.git</connection>
-		<developerConnection>scm:git:git@github.com:vaulttec/atlassian-auth-spnego.git</developerConnection>
-		<url>https://github.com/vaulttec/atlassian-auth-spnego</url>
-		<tag>HEAD</tag>
-	</scm>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -36,11 +29,9 @@
 						<goals>
 							<goal>release</goal>
 						</goals>
-						<inherited>false</inherited>
 						<configuration>
 							<releaseName>v${project.version}</releaseName>
 							<tag>v${project.version}</tag>
-							<artifact>${project.build.directory}/${project.artifactId}-${project.version}.jar</artifact>
 						</configuration>
 					</execution>
 				</executions>
